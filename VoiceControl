@@ -1,0 +1,62 @@
+import speech_recognition as sr
+import pyttsx3
+import pywhatkit
+import datetime
+import wikipedia
+import pyjokes
+ 
+listener = sr.Recognizer()
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id) # girl voice 
+ 
+ 
+def talk(text):
+    engine.say(text)
+    engine.runAndWait() # waits for sound from microphone
+ 
+def take_command():
+    try:
+        with sr.Microphone() as source:
+            talk("Welcome back Alfred")
+            voice = listener.listen(source)
+            command = listener.recognize_google(voice)
+            command = command.lower()
+            if 'rosie' in command: # only responds when 'rosie' is in the command
+                command = command.replace('rosie', '')
+                print(command) # prints the full conversation
+    except:
+        pass
+    return command
+ 
+ 
+def run_rosie():
+    command = take_command()
+    print(command)
+    if 'play' in command:
+        song = command.replace('play', '') # plays any song using the inbuilt youtube func
+        talk('playing ' + song)
+        pywhatkit.playonyt(song)
+    elif 'time check' in command:
+        time = datetime.datetime.now().strftime('%I:%M %p')
+        talk('Current time is ' + time)
+    elif 'play game' in command:
+        talk("needs to be fixed")
+    elif 'what is your favourite colour' in command:
+        talk("blue, like the colour of alfie's eyes")
+    elif 'what is the best programming langauge' in command:
+        talk('Python of course')
+    elif 'tell me a joke' in command:
+        talk(pyjokes.get_joke())
+    elif 'shut down' in command:
+        talk("shutting down..")
+        print("shutting down..")
+        exit()
+    elif 'open browser' in command:
+        import webBrowser # import the Web Browser here as altough it is slower, importing the file in a function was slower than just importing the file when called
+    else:
+        talk('Please repeat')
+ 
+ 
+while True:
+    run_rosie()
